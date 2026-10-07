@@ -11,16 +11,30 @@ jobs:
       - uses: actions/checkout@v4
       - name: Fetch verified export engine
         run: python3 scripts/fetch-engine.py
-      - name: Run synthetic unit and engine integration tests
+      - name: Prepare verified source and Rust targets
+        run: |
+          python3 scripts/vendor-engine.py
+          rustup toolchain install 1.99.0 --profile minimal
+          rustup default 1.99.0
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          command -v pkg-config || brew install pkgconf
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .build/iphone-arm64
+            .build/iphone-x86_64
+          key: iphone-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('ThirdParty/iphone-sources.json', 'scripts/build-iphone-tools.sh') }}
+      - name: Package both Mac architectures and bundled phone tools
+        run: bash scripts/build-app.sh
+      - name: Run synthetic unit and encrypted backup integration tests
         run: |
           if [ "$(uname -m)" = "arm64" ]; then
             export MESSAGE_ARCHIVE_TEST_ENGINE="$PWD/ThirdParty/binaries/imessage-exporter-aarch64-apple-darwin"
           else
             export MESSAGE_ARCHIVE_TEST_ENGINE="$PWD/ThirdParty/binaries/imessage-exporter-x86_64-apple-darwin"
           fi
+          export MESSAGE_ARCHIVE_TEST_BACKUP_READER="$PWD/ThirdParty/iphone-tools/bin/backup-reader"
           swift test
-      - name: Package both Mac architectures
-        run: bash scripts/build-app.sh
       - uses: actions/upload-artifact@v4
         with:
           name: iMessage-Exporter-macOS-preview

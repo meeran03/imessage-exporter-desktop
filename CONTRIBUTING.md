@@ -7,7 +7,8 @@ the scope.
 Use the sample library or invented SQLite fixtures. Do not commit a real chat,
 backup, contact list, attachment, export, or screenshot containing personal data.
 Build and test instructions are in the README. The engine integration test needs
-`MESSAGE_ARCHIVE_TEST_ENGINE` set to the matching local executable.
+`MESSAGE_ARCHIVE_TEST_ENGINE` set to the matching local executable and
+`MESSAGE_ARCHIVE_TEST_BACKUP_READER` set to the bundled backup-reader helper.
 
 The native UI is in `Sources/MessageArchive/`. Source loading, thread isolation,
 and exporting are in `Sources/ArchiveCore/`. Keep original sources read-only,

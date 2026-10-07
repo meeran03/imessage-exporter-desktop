@@ -114,7 +114,24 @@ public final class CancellationToken: @unchecked Sendable {
     private let lock = NSLock()
     private var cancelled = false
     public init() {}
-    public func cancel() { lock.lock(); cancelled = true; lock.unlock() }
+    private var children: [ObjectIdentifier: Process] = [:]
+    public func cancel() {
+        lock.lock(); cancelled = true; let running = Array(children.values); lock.unlock()
+        for process in running where process.isRunning {
+            process.terminate()
+            if process.isRunning { kill(process.processIdentifier, SIGKILL) }
+            process.waitUntilExit()
+        }
+    }
+    func launch(_ process: Process) throws {
+        lock.lock(); defer { lock.unlock() }
+        if cancelled { throw CancellationError() }
+        try process.run()
+        children[ObjectIdentifier(process)] = process
+    }
+    func finished(_ process: Process) {
+        lock.lock(); children.removeValue(forKey: ObjectIdentifier(process)); lock.unlock()
+    }
     public func check() throws {
         lock.lock(); let value = cancelled; lock.unlock()
         if value { throw CancellationError() }

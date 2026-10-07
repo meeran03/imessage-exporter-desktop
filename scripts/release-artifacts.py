@@ -2,12 +2,13 @@
 """Package only explicitly allowlisted project/source files. Never include local libraries."""
 from pathlib import Path
 import hashlib
+import json
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.1.1"
+VERSION = "0.2.0"
 ALLOWED_FILES = ["Package.swift", "README.md", "LICENSE", "CONTRIBUTING.md", "PRIVACY.md", "SECURITY.md", ".gitignore"]
-ALLOWED_FOLDERS = ["Sources", "Tests", "scripts", ".github", "docs"]
+ALLOWED_FOLDERS = ["Sources", "Tests", "scripts", ".github", "docs", "BackupReader"]
 
 
 def main():
@@ -21,6 +22,12 @@ def main():
     for folder in ALLOWED_FOLDERS:
         items += [p for p in (ROOT / folder).rglob("*") if p.is_file()]
     items += [ROOT / "ThirdParty/NOTICE.md", ROOT / "ThirdParty/SHA256SUMS"]
+    items += [ROOT / "ThirdParty/iphone-sources.json"]
+    for dependency in json.loads((ROOT / "ThirdParty/iphone-sources.json").read_text()):
+        archive = ROOT / "ThirdParty/iphone-source-archives" / dependency["url"].rsplit("/",1)[1]
+        if not archive.is_file() or hashlib.sha256(archive.read_bytes()).hexdigest() != dependency["sha256"]:
+            raise RuntimeError("Missing or invalid corresponding source: " + archive.name)
+        items.append(archive)
     items += [p for p in upstream.rglob("*") if p.is_file() and '.git' not in p.parts and 'target' not in p.parts]
     # Reject local export artifacts even if they are accidentally placed in an allowlisted directory.
     for path in items:

@@ -11,10 +11,20 @@ operation. A sudden crash or forced shutdown may leave a temporary folder in
 the system's temporary directory. Exports and ZIPs stay where you chose to save
 them until you delete them. Their transcripts and logs contain private data.
 
-iMessage Exporter neither reads a connected iPhone's live database nor creates a
-full phone backup. If you supply a Finder backup, the app reads only the files
-needed to list conversations, resolve names, and export the selected thread.
-It does not delete contacts, edit messages, or restore a device.
+When you choose **Connect iPhone**, the app creates a full local device backup,
+including data beyond Messages. It is saved in the folder you choose and remains
+there until you delete it. Backups can take significant disk space. A cancelled
+or failed backup remains in that folder, clearly marked as not loaded. Nothing
+is uploaded. The app preserves existing backup encryption settings and does not
+restore the phone, delete contacts, or edit messages.
+
+For encrypted backups, the password travels to a bundled reader through a pipe,
+not command arguments, environment variables, or saved logs. It is not saved for
+future sessions. Decrypted Messages, backup contact records, and Messages
+attachments are kept in a private temporary folder while that source is open.
+That working folder is removed when switching sources or quitting normally.
+A crash or forced shutdown may leave a working folder in the system's temporary
+directory. The full encrypted backup remains in the chosen location.
 
 The app's processing does not require a network connection. Opening the project
 link, Apple help, or external links within exported conversations uses your

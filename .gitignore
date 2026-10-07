@@ -5,6 +5,9 @@ ThirdParty/binaries/
 ThirdParty/imessage-exporter-*/
 ThirdParty/*.tar.gz
 ThirdParty/vendor/
+ThirdParty/iphone-tools/
+ThirdParty/iphone-source-archives/
+BackupReader/target/
 .DS_Store
 *.db
 *.db-wal

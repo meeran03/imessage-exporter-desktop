@@ -11,8 +11,8 @@ number has been replaced with a contact name for this public screenshot.*
 
 ## Download
 
-[Download the preview release](https://github.com/meeran03/imessage-exporter-desktop/releases/tag/v0.1.1).
-Choose `iMessage-Exporter-0.1.1-macOS-universal.zip`, extract it, and move
+[Download the preview release](https://github.com/meeran03/imessage-exporter-desktop/releases/tag/v0.2.0).
+Choose `iMessage-Exporter-0.2.0-macOS-universal.zip`, extract it, and move
 **iMessage Exporter.app** to Applications. It supports Apple Silicon and Intel Macs
 running macOS 13 Ventura or later. There is no Python, Homebrew, or Terminal setup
 for app users.
@@ -26,7 +26,9 @@ or backup encryption to use this app.
 
 ## Export a conversation
 
-1. Open **Mac Messages**, or choose an existing **unencrypted iPhone backup**.
+1. Connect your iPhone by USB and click **Connect iPhone**. Unlock it and tap
+   **Trust** if asked. Choose where to save its fresh backup, then approve any
+   passcode prompt on the phone. You can also open Mac Messages or an existing backup.
 2. Search by name, phone number, email, or group title. Select one conversation.
 3. Click **Export Conversation**, then choose a folder. Original attachments are
    included by default. A ZIP is created by default too; you can switch that off.
@@ -37,12 +39,21 @@ the app. The app has a shortcut to this settings page. Contact-name lookup is
 optional and uses the normal macOS Contacts permission prompt. Without it, you
 can use phone numbers and emails.
 
-For iPhone data, select the **device backup folder containing Manifest.db**, not
+The app creates a **full device backup**, including data beyond Messages. It stays
+in the folder you choose until you delete it. Existing backup encryption settings
+are preserved. Encrypted backups ask for the backup password, which can differ
+from the phone's passcode. The password is used for this session and is not saved.
+
+Once the backup finishes, its conversation list opens automatically. Search and
+export use that snapshot. **Refresh from iPhone** creates another fresh backup;
+there is no continuous connection to live Messages. Keep enough space for the full
+backup, exported files, and ZIP. Cancelled or incomplete backups are kept in their
+chosen folder and are never loaded as current Messages.
+
+For an existing backup, select the **device folder containing Manifest.db**, not
 the top-level folder containing several device backups. Finder stores backups in
 `~/Library/Application Support/MobileSync/Backup/`. The app can open that location.
-Connecting or pairing an iPhone does not expose its live Messages database.
-Create or update a local backup in Finder first; this app does not back up,
-restore, or modify a phone.
+It does not restore a phone, edit its messages, or change its encryption settings.
 
 ## What you get
 
@@ -71,8 +82,10 @@ it does not always equal the number of visible message bubbles.
 
 - macOS only. Apple Silicon and Intel are packaged; execution on Intel hardware
   and the oldest supported macOS version has not yet been independently tested.
-- Encrypted iPhone backups are not supported by this exact-thread selector yet.
-  Keep encryption enabled and use Messages synced to your Mac instead.
+- USB backup creation needs a trusted, unlocked iPhone and may require a passcode
+  prompt. Device discovery, backup failures, cancellation, and encrypted backup
+  exports have automated tests. A full backup through this app on a physical
+  iPhone has not yet been independently verified.
 - The app exports only the records and files present in the selected source.
   Cloud-only attachments, deleted data absent from the backup, and unfinished
   syncing cannot be recovered by exporting. Messages in iCloud may be absent
@@ -87,18 +100,24 @@ it does not always equal the number of visible message bubbles.
 
 ## Build from source
 
-Requires Xcode or its Command Line Tools with Swift 6+, and Python 3 for the build
-scripts. The application itself has no Python dependency.
+Requires Xcode or its Command Line Tools with Swift 6+, Python 3, Rust 1.99+ with
+both Mac targets, and pkg-config. Python, Rust, and pkg-config are build tools;
+app users do not need them. The build compiles pinned libimobiledevice tools and
+their libraries from verified source for both architectures.
 
 ```sh
-python3 scripts/fetch-engine.py
-MESSAGE_ARCHIVE_TEST_ENGINE="$PWD/ThirdParty/binaries/imessage-exporter-aarch64-apple-darwin" swift test
+rustup target add aarch64-apple-darwin x86_64-apple-darwin
+python3 scripts/vendor-engine.py
 bash scripts/build-app.sh
+MESSAGE_ARCHIVE_TEST_ENGINE="$PWD/ThirdParty/binaries/imessage-exporter-aarch64-apple-darwin" \
+MESSAGE_ARCHIVE_TEST_BACKUP_READER="$PWD/ThirdParty/iphone-tools/bin/backup-reader" swift test
 ```
 
 On an Intel development Mac, use `imessage-exporter-x86_64-apple-darwin` in the test
-command. The packaging script cross-compiles the native app for both architectures
-and combines the verified upstream engine binaries. Output is in `dist/`.
+command. Packaging cross-compiles the app, phone tools, and backup reader, and
+combines the verified upstream engine binaries. Output is in `dist/`. The build
+requires downloads the first time; verified source archives can be supplied in
+`ThirdParty/iphone-source-archives/` for later offline builds.
 
 For signed builds, set `SIGNING_IDENTITY` to an installed Developer ID Application
 identity. Notarize and staple the resulting app before releasing it as notarized.

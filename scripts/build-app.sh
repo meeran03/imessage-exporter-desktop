@@ -4,9 +4,12 @@ PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_ROOT"
 export CLANG_MODULE_CACHE_PATH="$PROJECT_ROOT/.build/ModuleCache"
 export SWIFT_MODULECACHE_PATH="$PROJECT_ROOT/.build/ModuleCache"
-VERSION="${VERSION:-0.1.1}"
+VERSION="${VERSION:-0.2.0}"
 APP="$PROJECT_ROOT/dist/iMessage Exporter.app"
 python3 scripts/fetch-engine.py
+if [[ ! -d ThirdParty/imessage-exporter-4.3.0/vendor ]]; then python3 scripts/vendor-engine.py; fi
+bash scripts/build-iphone-tools.sh
+bash scripts/build-backup-reader.sh
 for ARCH in arm64 x86_64; do
     swift build --disable-sandbox --cache-path .build/cache -c release --arch "$ARCH"
 done
@@ -16,6 +19,15 @@ lipo -create ThirdParty/binaries/imessage-exporter-aarch64-apple-darwin ThirdPar
 chmod +x "$APP/Contents/MacOS/MessageArchive" "$APP/Contents/Resources/imessage-exporter"
 cp LICENSE "$APP/Contents/Resources/LICENSE"
 cp ThirdParty/NOTICE.md "$APP/Contents/Resources/ThirdParty-Notice.txt"
+mkdir -p "$APP/Contents/Resources/iphone"
+ditto ThirdParty/iphone-tools "$APP/Contents/Resources/iphone"
+for ARCHIVE in ThirdParty/iphone-source-archives/*; do
+    PACKAGE="$(basename "$ARCHIVE")"; PACKAGE="${PACKAGE%.tar.*}"
+    mkdir -p "$APP/Contents/Resources/iphone/licenses/$PACKAGE"
+    for NOTICE in "$PROJECT_ROOT/.build/iphone-arm64/$PACKAGE"/COPYING* "$PROJECT_ROOT/.build/iphone-arm64/$PACKAGE"/LICENSE*; do
+        if [[ -f "$NOTICE" ]]; then cp "$NOTICE" "$APP/Contents/Resources/iphone/licenses/$PACKAGE/"; fi
+    done
+done
 swift scripts/make-icon.swift .build/AppIcon.iconset
 iconutil -c icns .build/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 cat > "$APP/Contents/Info.plist" <<EOF
@@ -36,9 +48,15 @@ cat > "$APP/Contents/Info.plist" <<EOF
 </dict></plist>
 EOF
 if [[ -n "${SIGNING_IDENTITY:-}" ]]; then
+    for BINARY in "$APP/Contents/Resources/iphone/bin/"* "$APP/Contents/Resources/iphone/lib/"*.dylib; do
+        codesign --force --options runtime --timestamp --sign "$SIGNING_IDENTITY" "$BINARY"
+    done
     codesign --force --options runtime --timestamp --sign "$SIGNING_IDENTITY" "$APP/Contents/Resources/imessage-exporter"
     codesign --force --options runtime --timestamp --sign "$SIGNING_IDENTITY" "$APP"
 else
+    for BINARY in "$APP/Contents/Resources/iphone/bin/"* "$APP/Contents/Resources/iphone/lib/"*.dylib; do
+        codesign --force --sign - "$BINARY"
+    done
     codesign --force --sign - "$APP/Contents/Resources/imessage-exporter"
     codesign --force --sign - "$APP"
 fi

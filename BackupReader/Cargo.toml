@@ -1,0 +1,14 @@
+[package]
+name = "backup-reader"
+version = "0.2.0"
+edition = "2024"
+license = "GPL-3.0-only"
+
+[dependencies]
+crabapple = "=0.4.7"
+plist = "=1.10.0"
+rusqlite = { version = "=0.40.2", features = ["bundled"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
