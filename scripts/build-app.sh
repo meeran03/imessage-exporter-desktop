@@ -4,7 +4,7 @@ PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_ROOT"
 export CLANG_MODULE_CACHE_PATH="$PROJECT_ROOT/.build/ModuleCache"
 export SWIFT_MODULECACHE_PATH="$PROJECT_ROOT/.build/ModuleCache"
-VERSION="${VERSION:-0.1.0}"
+VERSION="${VERSION:-0.1.1}"
 APP="$PROJECT_ROOT/dist/iMessage Exporter.app"
 python3 scripts/fetch-engine.py
 for ARCH in arm64 x86_64; do

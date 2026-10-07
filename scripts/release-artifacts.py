@@ -5,7 +5,7 @@ import hashlib
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 ALLOWED_FILES = ["Package.swift", "README.md", "LICENSE", "CONTRIBUTING.md", "PRIVACY.md", "SECURITY.md", ".gitignore"]
 ALLOWED_FOLDERS = ["Sources", "Tests", "scripts", ".github", "docs"]
 

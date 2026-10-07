@@ -11,8 +11,8 @@ number has been replaced with a contact name for this public screenshot.*
 
 ## Download
 
-[Download the preview release](https://github.com/meeranmalik/imessage-exporter-desktop/releases/tag/v0.1.0).
-Choose `iMessage-Exporter-0.1.0-macOS-universal.zip`, extract it, and move
+[Download the preview release](https://github.com/meeran03/imessage-exporter-desktop/releases/tag/v0.1.1).
+Choose `iMessage-Exporter-0.1.1-macOS-universal.zip`, extract it, and move
 **iMessage Exporter.app** to Applications. It supports Apple Silicon and Intel Macs
 running macOS 13 Ventura or later. There is no Python, Homebrew, or Terminal setup
 for app users.

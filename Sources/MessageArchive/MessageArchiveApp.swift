@@ -26,7 +26,7 @@ import ArchiveCore
                 Button("Open-Source License") {
                     if let url = Bundle.main.url(forResource: "LICENSE", withExtension: nil) { NSWorkspace.shared.open(url) }
                 }
-                Button("Project on GitHub") { NSWorkspace.shared.open(URL(string: "https://github.com/meeranmalik/imessage-exporter-desktop")!) }
+                Button("Project on GitHub") { NSWorkspace.shared.open(URL(string: "https://github.com/meeran03/imessage-exporter-desktop")!) }
             }
             CommandMenu("Export") {
                 Button("Export Selected Conversation…", action: model.startExport)
