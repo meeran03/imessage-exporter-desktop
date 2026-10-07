@@ -19,6 +19,15 @@ lipo -create ThirdParty/binaries/imessage-exporter-aarch64-apple-darwin ThirdPar
 chmod +x "$APP/Contents/MacOS/MessageArchive" "$APP/Contents/Resources/imessage-exporter"
 cp LICENSE "$APP/Contents/Resources/LICENSE"
 cp ThirdParty/NOTICE.md "$APP/Contents/Resources/ThirdParty-Notice.txt"
+# Include dependency copyright/license texts with the binary as well as source.
+for CRATE in ThirdParty/imessage-exporter-4.3.0/vendor/*; do
+    for NOTICE in "$CRATE"/LICENSE* "$CRATE"/COPYING* "$CRATE"/NOTICE*; do
+        if [[ -f "$NOTICE" ]]; then
+            DEST="$APP/Contents/Resources/Rust-Licenses/$(basename "$CRATE")"
+            mkdir -p "$DEST"; cp "$NOTICE" "$DEST/"
+        fi
+    done
+done
 mkdir -p "$APP/Contents/Resources/iphone"
 ditto ThirdParty/iphone-tools "$APP/Contents/Resources/iphone"
 for ARCHIVE in ThirdParty/iphone-source-archives/*; do

@@ -35,5 +35,6 @@ allow modified builds. None of these projects is affiliated with Apple.
 
 The GPL-3.0-only backup-reader helper uses crabapple 0.4.7 (MIT), plist, rusqlite,
 and their locked dependencies. Their source and license notices are vendored in
-the accompanying source archive. The helper decrypts only Messages, backup
+the accompanying source archive. Dependency license texts are also bundled under
+Contents/Resources/Rust-Licenses/. The helper decrypts only Messages, backup
 contacts, and Messages attachments into the session's private working folder.
