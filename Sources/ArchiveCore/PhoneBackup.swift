@@ -55,9 +55,11 @@ public struct PhoneBackup: Sendable {
                 // Do not surface raw paths, app names, or message data from tool output in the UI.
                 if let percentage = Self.progressPercent(label) { progress("Backing up iPhone: \(percentage)% · Keep it connected…") }
             })
+            try token.check()
             guard result.code == 0 else { throw ArchiveError.message("Backup failed. Check the phone for a passcode prompt, reconnect it, and try again.") }
             let backup = root.appendingPathComponent(device.id)
             try Self.validateCompleted(backup)
+            try token.check()
             return backup
         } catch {
             throw ArchiveError.message((error is CancellationError ? "Backup cancelled." : error.localizedDescription) + " The partial backup is in \(root.path). It has not been loaded as current Messages.")
@@ -72,6 +74,7 @@ public struct PhoneBackup: Sendable {
             let result = try run("backup-reader", [source.path, destination.path], input: password, token: token, progress: { _ in
                 progress("Reading encrypted Messages and attachments…")
             })
+            try token.check()
             guard result.code == 0 else { throw ArchiveError.message("The backup could not be unlocked. Check its backup encryption password and try again.") }
             _ = try Source.resolve(destination)
         } catch { try? FileManager.default.removeItem(at: destination); throw error }

@@ -61,6 +61,19 @@ final class PhoneBackupTests: XCTestCase {
         let token = CancellationToken(); token.cancel()
         XCTAssertThrowsError(try service.create(device: device, parent: root, token: token) { _ in })
     }
+    func testCancellationAtBackupCompletionStillRejectsSnapshot() throws {
+        let id = device.id
+        let service = PhoneBackup(tools: root) { executable,args,_,token,_ in
+            if executable.lastPathComponent == "idevicebackup2" {
+                try Self.completed(URL(fileURLWithPath: args[4]).appendingPathComponent(id))
+                token.cancel()
+            }
+            return .init(code: 0, output: "")
+        }
+        XCTAssertThrowsError(try service.create(device: device, parent: root, token: CancellationToken()) { _ in }) { error in
+            XCTAssertTrue(error.localizedDescription.contains("Backup cancelled"))
+        }
+    }
     func testCommandDrainsLargeOutputAndCancellationKillsChild() throws {
         let script = root.appendingPathComponent("large-output")
         try Data("#!/bin/sh\n/usr/bin/yes synthetic | /usr/bin/head -c 400000\n".utf8).write(to: script)
@@ -90,10 +103,14 @@ final class PhoneBackupTests: XCTestCase {
         try service.unlock(source: backup, destination: dest, password: "synthetic-fixture-password", token: CancellationToken()) { _ in }
         XCTAssertFalse(try PhoneBackup.encrypted(dest))
         let source = try Source.resolve(dest)
+        XCTAssertEqual(try Library.backupContacts(dest)[normalize("+15550001001")], "Avery Example")
         let chat = try XCTUnwrap(Library.load(source).first { $0.id == 1 })
         let result = try Exporter(engine: URL(fileURLWithPath: engine)).export(source: source, chat: chat, parent: root, token: CancellationToken()) { _ in }
         XCTAssertEqual(result.records, 8); XCTAssertEqual(result.copiedAttachments, 1)
         XCTAssertFalse(result.needsAttention, "\(result.warnings)")
+        let json = try JSONSerialization.jsonObject(with: Data(contentsOf: result.folder.appendingPathComponent("messages.json"))) as! [String: Any]
+        let attachment = try XCTUnwrap((json["attachments"] as? [[String: Any]])?.first?["exported_path"] as? String)
+        XCTAssertEqual(try Data(contentsOf: result.folder.appendingPathComponent(attachment)), try Data(contentsOf: demo.deletingLastPathComponent().appendingPathComponent("Itinerary.txt")))
         XCTAssertEqual(try Data(contentsOf: backup.appendingPathComponent("Manifest.db")), before)
         let rejected = root.appendingPathComponent("wrong-password")
         XCTAssertThrowsError(try service.unlock(source: backup, destination: rejected, password: "wrong", token: CancellationToken()) { _ in })

@@ -75,6 +75,7 @@ import SwiftUI
                         Task { @MainActor in self.status = label }
                     }
                 }.value
+                try cancellation.check()
                 lastPhoneBackup = backup; snapshotDate = Date()
                 busy = false; canCancel = false; token = nil; status = ""
                 openBackup(backup)
@@ -112,6 +113,7 @@ import SwiftUI
                         Task { @MainActor in self.status = label }
                     }
                 }.value
+                try cancellation.check()
                 pendingEncryptedBackup = nil; busy = false; canCancel = false; token = nil
                 load(destination)
             } catch {
