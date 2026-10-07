@@ -8,6 +8,11 @@ uploads, subscriptions, or analytics.
 
 *Original cover illustration, not an app screenshot.*
 
+![Illustrative Message Archive interface with invented sample conversations](docs/app-mockup.png)
+
+*Generated interface mockup based on the native app layout. This is not a captured
+app window; the conversation names and data are invented.*
+
 ## Download
 
 [Download the preview release](https://github.com/meeranmalik/message-archive/releases/tag/v0.1.0).
