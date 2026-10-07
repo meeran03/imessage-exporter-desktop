@@ -1,0 +1,27 @@
+name: Build and test
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch verified export engine
+        run: python3 scripts/fetch-engine.py
+      - name: Run synthetic unit and engine integration tests
+        run: |
+          if [ "$(uname -m)" = "arm64" ]; then
+            export MESSAGE_ARCHIVE_TEST_ENGINE="$PWD/ThirdParty/binaries/imessage-exporter-aarch64-apple-darwin"
+          else
+            export MESSAGE_ARCHIVE_TEST_ENGINE="$PWD/ThirdParty/binaries/imessage-exporter-x86_64-apple-darwin"
+          fi
+          swift test
+      - name: Package both Mac architectures
+        run: bash scripts/build-app.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Message-Archive-macOS-preview
+          path: dist/Message-Archive-*-macOS-universal.zip
