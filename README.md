@@ -1,23 +1,19 @@
-# Message Archive
+# iMessage Exporter
 
 A free, open-source Mac app to export one iMessage conversation with its original
 photos, videos, audio, and files. Everything is processed locally. No account,
 uploads, subscriptions, or analytics.
 
-![Message Archive cover illustration](docs/cover.png)
+![iMessage Exporter app screenshot with sample contact names](docs/app-screenshot.png)
 
-*Original cover illustration, not an app screenshot.*
-
-![Illustrative Message Archive interface with invented sample conversations](docs/app-mockup.png)
-
-*Generated interface mockup based on the native app layout. This is not a captured
-app window; the conversation names and data are invented.*
+*Captured from the app using invented sample conversations. Only the sample phone
+number has been replaced with a contact name for this public screenshot.*
 
 ## Download
 
-[Download the preview release](https://github.com/meeranmalik/message-archive/releases/tag/v0.1.0).
-Choose `Message-Archive-0.1.0-macOS-universal.zip`, extract it, and move
-**Message Archive.app** to Applications. It supports Apple Silicon and Intel Macs
+[Download the preview release](https://github.com/meeranmalik/imessage-exporter-desktop/releases/tag/v0.1.0).
+Choose `iMessage-Exporter-0.1.0-macOS-universal.zip`, extract it, and move
+**iMessage Exporter.app** to Applications. It supports Apple Silicon and Intel Macs
 running macOS 13 Ventura or later. There is no Python, Homebrew, or Terminal setup
 for app users.
 
@@ -36,7 +32,7 @@ or backup encryption to use this app.
    included by default. A ZIP is created by default too; you can switch that off.
 
 For Mac Messages, macOS requires Full Disk Access. Go to **System Settings →
-Privacy & Security → Full Disk Access**, add Message Archive, then quit and reopen
+Privacy & Security → Full Disk Access**, add iMessage Exporter, then quit and reopen
 the app. The app has a shortcut to this settings page. Contact-name lookup is
 optional and uses the normal macOS Contacts permission prompt. Without it, you
 can use phone numbers and emails.
@@ -126,7 +122,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Use the built-in sample library for
 screenshots and tests. Never submit real chats, databases, contact lists, backups,
 or attachments in an issue or pull request.
 
-GPL-3.0-only. Message Archive uses
+GPL-3.0-only. This desktop app uses
 [imessage-exporter](https://github.com/ReagentX/imessage-exporter) by ReagentX and
-its contributors. See [third-party notices](ThirdParty/NOTICE.md). Message Archive
+its contributors. See [third-party notices](ThirdParty/NOTICE.md). iMessage Exporter
 is an independent project and is not affiliated with Apple.

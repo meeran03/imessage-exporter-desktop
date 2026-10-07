@@ -23,7 +23,7 @@ public final class Exporter {
             throw ArchiveError.message("Choose an export folder outside the source database or backup.")
         }
         guard FileManager.default.isExecutableFile(atPath: engine.path) else {
-            throw ArchiveError.message("The bundled export engine is missing. Download a complete Message Archive app bundle.")
+            throw ArchiveError.message("The bundled export engine is missing. Download a complete iMessage Exporter app bundle.")
         }
         let manager = FileManager.default
         let work = manager.temporaryDirectory.appendingPathComponent("message-archive-" + UUID().uuidString)

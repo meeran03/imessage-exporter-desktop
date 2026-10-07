@@ -23,5 +23,5 @@ jobs:
         run: bash scripts/build-app.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: Message-Archive-macOS-preview
-          path: dist/Message-Archive-*-macOS-universal.zip
+          name: iMessage-Exporter-macOS-preview
+          path: dist/iMessage-Exporter-*-macOS-universal.zip

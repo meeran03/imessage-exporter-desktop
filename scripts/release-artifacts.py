@@ -16,7 +16,7 @@ def main():
     upstream = ROOT / "ThirdParty/imessage-exporter-4.3.0"
     if not (upstream / "vendor").is_dir():
         raise RuntimeError("Run scripts/vendor-engine.py before packaging corresponding source")
-    source_zip = dist / f"Message-Archive-{VERSION}-source.zip"
+    source_zip = dist / f"iMessage-Exporter-{VERSION}-source.zip"
     items = [ROOT / name for name in ALLOWED_FILES]
     for folder in ALLOWED_FOLDERS:
         items += [p for p in (ROOT / folder).rglob("*") if p.is_file()]
@@ -30,11 +30,11 @@ def main():
             raise RuntimeError("Source artifacts must not contain symlinks")
     with zipfile.ZipFile(source_zip, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         for path in sorted(set(items)):
-            z.write(path, "message-archive/" + str(path.relative_to(ROOT)))
+            z.write(path, "imessage-exporter-desktop/" + str(path.relative_to(ROOT)))
     with zipfile.ZipFile(source_zip) as z:
         if z.testzip() is not None:
             raise RuntimeError("Source archive verification failed")
-    files = sorted(dist.glob(f"Message-Archive-{VERSION}-*.zip"))
+    files = sorted(dist.glob(f"iMessage-Exporter-{VERSION}-*.zip"))
     checksums = "".join(hashlib.sha256(p.read_bytes()).hexdigest() + "  " + p.name + "\n" for p in files)
     (dist / "SHA256SUMS").write_text(checksums)
     print(f"Created source archive with {len(set(items))} files and SHA256SUMS.")

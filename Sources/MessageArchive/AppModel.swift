@@ -84,7 +84,7 @@ import SwiftUI
         panel.canChooseDirectories = true; panel.canChooseFiles = false; panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let parent = panel.url else { return }
         guard let engine = Bundle.main.url(forResource: "imessage-exporter", withExtension: nil) else {
-            error = "The export engine is missing. Use the packaged Message Archive.app instead of the bare development executable."
+            error = "The export engine is missing. Use the packaged iMessage Exporter.app instead of the bare development executable."
             return
         }
         let cancellation = CancellationToken()

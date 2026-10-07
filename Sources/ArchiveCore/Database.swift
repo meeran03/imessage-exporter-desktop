@@ -39,7 +39,7 @@ final class Database {
         if code != SQLITE_OK {
             let reason = handle.map { String(cString: sqlite3_errmsg($0)) } ?? "Access denied"
             if let handle { sqlite3_close(handle) }; handle = nil
-            throw ArchiveError.message("Cannot read this source: \(reason). For Mac Messages, enable Full Disk Access for Message Archive, then quit and reopen the app.")
+            throw ArchiveError.message("Cannot read this source: \(reason). For Mac Messages, enable Full Disk Access for iMessage Exporter, then quit and reopen the app.")
         }
         sqlite3_busy_timeout(handle, 5000)
     }

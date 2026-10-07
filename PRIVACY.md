@@ -1,6 +1,6 @@
 # Privacy
 
-Message Archive processes your selected source on your Mac. It has no account
+iMessage Exporter processes your selected source on your Mac. It has no account
 system, analytics, crash uploader, web API, or background sync. Contact-name
 lookup uses macOS Contacts with your permission. iPhone backup contacts are read
 from the local backup itself.
@@ -11,7 +11,7 @@ operation. A sudden crash or forced shutdown may leave a temporary folder in
 the system's temporary directory. Exports and ZIPs stay where you chose to save
 them until you delete them. Their transcripts and logs contain private data.
 
-Message Archive neither reads a connected iPhone's live database nor creates a
+iMessage Exporter neither reads a connected iPhone's live database nor creates a
 full phone backup. If you supply a Finder backup, the app reads only the files
 needed to list conversations, resolve names, and export the selected thread.
 It does not delete contacts, edit messages, or restore a device.

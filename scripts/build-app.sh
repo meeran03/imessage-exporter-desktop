@@ -5,7 +5,7 @@ cd "$PROJECT_ROOT"
 export CLANG_MODULE_CACHE_PATH="$PROJECT_ROOT/.build/ModuleCache"
 export SWIFT_MODULECACHE_PATH="$PROJECT_ROOT/.build/ModuleCache"
 VERSION="${VERSION:-0.1.0}"
-APP="$PROJECT_ROOT/dist/Message Archive.app"
+APP="$PROJECT_ROOT/dist/iMessage Exporter.app"
 python3 scripts/fetch-engine.py
 for ARCH in arm64 x86_64; do
     swift build --disable-sandbox --cache-path .build/cache -c release --arch "$ARCH"
@@ -22,9 +22,9 @@ cat > "$APP/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-<key>CFBundleIdentifier</key><string>dev.meeran.messagearchive</string>
-<key>CFBundleName</key><string>Message Archive</string>
-<key>CFBundleDisplayName</key><string>Message Archive</string>
+<key>CFBundleIdentifier</key><string>dev.meeran.imessageexporter</string>
+<key>CFBundleName</key><string>iMessage Exporter</string>
+<key>CFBundleDisplayName</key><string>iMessage Exporter</string>
 <key>CFBundleExecutable</key><string>MessageArchive</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>CFBundleShortVersionString</key><string>$VERSION</string>
@@ -43,5 +43,5 @@ else
     codesign --force --sign - "$APP"
 fi
 codesign --verify --deep --strict "$APP"
-ditto -c -k --keepParent "$APP" "dist/Message-Archive-$VERSION-macOS-universal.zip"
+ditto -c -k --keepParent "$APP" "dist/iMessage-Exporter-$VERSION-macOS-universal.zip"
 printf '%s\n' "Built $APP"

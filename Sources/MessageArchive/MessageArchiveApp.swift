@@ -6,7 +6,7 @@ import ArchiveCore
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var model = AppModel()
     var body: some Scene {
-        WindowGroup("Message Archive") {
+        WindowGroup("iMessage Exporter") {
             ArchiveWindow(model: model)
                 .frame(minWidth: 880, minHeight: 600)
                 .task {
@@ -26,7 +26,7 @@ import ArchiveCore
                 Button("Open-Source License") {
                     if let url = Bundle.main.url(forResource: "LICENSE", withExtension: nil) { NSWorkspace.shared.open(url) }
                 }
-                Button("Project on GitHub") { NSWorkspace.shared.open(URL(string: "https://github.com/meeranmalik/message-archive")!) }
+                Button("Project on GitHub") { NSWorkspace.shared.open(URL(string: "https://github.com/meeranmalik/imessage-exporter-desktop")!) }
             }
             CommandMenu("Export") {
                 Button("Export Selected Conversation…", action: model.startExport)
@@ -48,14 +48,15 @@ struct ArchiveWindow: View {
     @ObservedObject var model: AppModel
     private let accent = Color(red: 0.08, green: 0.42, blue: 0.45)
     var body: some View {
-        HSplitView {
-            sidebar.frame(minWidth: 290, idealWidth: 320, maxWidth: 390)
+        HStack(spacing: 0) {
+            sidebar.frame(width: 320).frame(maxHeight: .infinity, alignment: .top)
+            Divider()
             detail.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .tint(accent)
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                Label("Message Archive", systemImage: "archivebox").font(.headline)
+                Label("iMessage Exporter", systemImage: "archivebox").font(.headline)
             }
             ToolbarItemGroup {
                 if model.isDemo { Text("Sample library").font(.caption).foregroundStyle(.orange) }
@@ -70,7 +71,7 @@ struct ArchiveWindow: View {
                 .disabled(model.busy)
             }
         }
-        .alert("Message Archive", isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
+        .alert("iMessage Exporter", isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
             Button("OK") { model.error = nil }
             if model.error?.contains("Full Disk Access") == true { Button("Open Privacy Settings", action: model.openPermissions) }
         } message: { Text(model.error ?? "") }
